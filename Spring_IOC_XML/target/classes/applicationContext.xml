@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+<!--创建 bean 对象的方式-->
+<!--    1.调用构造函数创造 bean-->
+<!--    <bean id="user" class="com.example.bean.User" />-->
+<!--    2.调用静态工厂方法-->
+<!--    <bean id="user" class="com.example.factory.UserFactory" factory-method="getUser1"/>-->
+<!--    3.调用实例工厂方法-->
+<!--    <bean id="userFactory" class="com.example.factory.UserFactory"/>-->
+<!--    <bean id="user" factory-bean="userFactory" factory-method="getUser2"/>-->
+<!--    4.本质上属于第3种，只是通过接口的形式默认 getObect() 为实例工厂方法-->
+    <bean id="user" class="com.example.factory.UserFactoryBean"/>
+    <bean id="userDao" class="com.example.dao.UserDao">
+        <property name="user" ref="user"/>
+    </bean>
+
+<!--为对象参数注入值的方式    -->
+<!--    1.构造方法-->
+<!--        对应类必须实现相应的构造函数，否则会报错-->
+<!--        1.按名称-->
+<!--    <bean id="device" class="com.example.bean.Device">-->
+<!--        <constructor-arg name="deviceId" value="001"/>-->
+<!--        <constructor-arg name="deviceName" value="Dongfeng"/>-->
+<!--        <constructor-arg name="deviceDate" value="2019/03/25"/>-->
+<!--    </bean>-->
+<!--        2.按类型: type 指定参数类型 此处不可用，该类构造函数类型不唯一-->
+<!--        3.按索引: index 指定位置-->
+    <bean id="device" class="com.example.bean.Device">
+        <constructor-arg index="0" value="001"/>
+        <constructor-arg index="1" value="Dongfeng"/>
+        <constructor-arg index="2" value="2019/03/25"/>
+    </bean>
+
+    <bean id="deviceDao" class="com.example.dao.DeviceDao">
+<!--        基本数据类型-->
+        <constructor-arg name="intVal" value="10"/>
+        <constructor-arg name="stringVal" value="computer"/>
+<!--        引用数据类型-->
+        <constructor-arg name="device" ref="device"/>
+<!--        集合注入-->
+        <constructor-arg name="array">
+            <array>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </array>
+        </constructor-arg>
+        <constructor-arg name="arrayList">
+            <util:list list-class="java.util.ArrayList" value-type="java.lang.Integer">
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </util:list>
+        </constructor-arg>
+        <constructor-arg name="hashMap">
+            <util:map map-class="java.util.HashMap" key-type="java.lang.Integer" value-type="java.lang.String">
+                <entry key="1" value="王一"/>
+                <entry key="2" value="王二"/>
+                <entry key="3" value="王三"/>
+                <entry key="4" value="王四"/>
+            </util:map>
+        </constructor-arg>
+        <constructor-arg name="hashSet">
+            <util:set set-class="java.util.HashSet" value-type="java.lang.Integer">
+                <value>10</value>
+                <value>15</value>
+                <value>20</value>
+            </util:set>
+        </constructor-arg>
+    </bean>
+    
+<!--    2.setter 方法-->
+<!--    对应类必须实现相应的 setter 方法，否则会报错-->
+    <bean id="admin" class="com.example.bean.Admin">
+        <property name="adminId" value="001"/>
+        <property name="adminName" value="admin"/>
+        <property name="adminPassword" value="123465"/>
+    </bean>
+
+    <bean id="adminDao" class="com.example.dao.AdminDao">
+        <property name="admin" ref="admin"/>
+        <property name="integerList">
+            <list>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+                <value>4</value>
+            </list>
+        </property>
+        <property name="integerStringMap">
+            <map>
+                <entry key="0" value="Jack"/>
+                <entry key="1" value="Mary"/>
+            </map>
+        </property>
+        <property name="integerSet">
+            <set>
+                <value>1</value>
+                <value>2</value>
+                <value>3</value>
+            </set>
+        </property>
+        <property name="properties">
+            <props>
+                <prop key="name">Tom</prop>
+                <prop key="gender">man</prop>
+            </props>
+        </property>
+    </bean>
+<!--    3.自动装配-->
+<!--        1.按照类型: 容器中相同类型的 bean 唯一-->
+<!--    <bean id="user1" class="com.example.bean.User" autowire="byType"/>-->
+<!--        2.按名称: 类的属性名与容器中 bean 的名称唯一-->
+<!--    <bean id="user1" class="com.example.bean.User" autowire="byName"/>-->
+<!--        3.构造方法: 自动按照构造函数的参数类型进行装配-->
+    <bean id="user1" class="com.example.bean.User" autowire="constructor"/>
+</beans>
