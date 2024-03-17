@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 通过spring配置文件生成代理:自动代理-->
+    <!--目标对象(被增强对象)-->
+    <bean id="orderDao" class="com.example.dao.OrderDao"></bean>
+    <!--目标对象(被增强对象)-->
+    <bean id="customerDao" class="com.example.dao.Impl.CustomerDaoImpl"></bean>
+
+    <!--定义增强-->
+    <bean id="beforeAdvice" class="com.example.advice.MyBeforeAdvice"></bean>
+    <!--定义增强-->
+    <bean id="aroundAdvice" class="com.example.advice.MyAroundMethod"></bean>
+
+
+    <!-- 自动代理:按名称的代理 基于后处理 Bean,后处理 Bean 不需要配置 ID -->
+    <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <!--以Dao结尾的bean-->
+        <property name="beanNames" value="*Dao"/>
+        <!--对目标对象采用前置增强-->
+        <property name="interceptorNames" value="beforeAdvice"/>
+    </bean>
+</beans>

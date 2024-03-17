@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--spring通过配置生成代理,不带有切点的切面-->
+    <!--目标对象(被增强的对象)-->
+    <bean name="customerDao" class="com.example.dao.Impl.CustomerDaoImpl"></bean>
+    <!--定义增强-->
+    <bean name="beforeAdvice" class="com.example.advice.MyBeforeAdvice"></bean>
+
+    <!--spring 支持配置生成代理-->
+    <bean id="customerDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!--设置目标对象-->
+        <property name="target" ref="customerDao"/>
+        <!--设置实现的接口 value中要写接口的全路径-->
+        <property name="proxyInterfaces" value="com.example.dao.CustomerDao"/>
+        <!--需要使用value:要的名称-->
+        <property name="interceptorNames" value="beforeAdvice"/>
+    </bean>
+
+
+
+
+    <!--目标对象(被增强对象)-->
+    <bean id="orderDao" class="com.example.dao.OrderDao"></bean>
+    <!--定义增强-->
+    <bean id="aroundAdvice" class="com.example.advice.MyAroundMethod"></bean>
+    <!--定义切点切面(哪些方法要增强)-->
+    <bean id="myPointcutAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <!--应用增强-->
+        <property name="advice" ref="aroundAdvice"/>
+        <property name = "pattern">
+            <!--  .表示符合任何单一字元
+             ###  +表示符合前一个字元一次或多次
+             ###  *表示符合前一个字元零次或多次
+             ###  \Escape任何Regular expression使用到的符号
+             -->
+            <!-- .*表示前面的前缀(包括包名) 表示print方法-->
+            <value>.*te</value>
+        </property>
+    </bean>
+
+    <!--定义生成代理对象-->
+    <bean id="orderDaoProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!--配置目标对象-->
+        <property name="target" ref="orderDao"/>
+        <!--针对类的代理-->
+        <property name="proxyTargetClass" value="true"/>
+        <!--在目标应用上增强-->
+        <property name="interceptorNames" value="myPointcutAdvisor"/>
+    </bean>
+
+</beans>
