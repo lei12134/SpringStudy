@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--定义被增强的类-->
+    <bean name="adminDao" class="com.example.dao.AdminDao"></bean>
+    <!--定义切面类-->
+    <bean name="myAspectJ" class="com.example.aspect.MyAspectJXML"></bean>
+
+    <!--定义aop配置-->
+    <aop:config>
+        <!--定义哪些方法上使用增强-->
+        <aop:pointcut expression="execution(* com.example.dao.UserDao.add*(..))" id="myPointcut"/>
+
+        <aop:pointcut expression="execution(* com.example.dao.UserDao.add(..))" id="myPointcut1"/>
+
+        <aop:aspect ref="myAspectJ">
+            <!--在add开头的方法上采用前置通知-->
+            <aop:before method="before" pointcut-ref="myPointcut"/>
+        </aop:aspect>
+        <aop:aspect ref="myAspectJ">
+            <!--后置通知-->
+            <aop:after-returning method="after" pointcut-ref="myPointcut" returning="returnValue"/>
+        </aop:aspect>
+        <aop:aspect ref="myAspectJ">
+            <!--环绕通知-->
+            <aop:around method="arount" pointcut-ref="myPointcut"/>
+        </aop:aspect>
+        <aop:aspect ref="myAspectJ">
+            <!--异常通知-->
+            <aop:after-throwing method="afterThrowing" pointcut-ref="myPointcut" throwing="e"/>
+        </aop:aspect>
+        <aop:aspect ref="myAspectJ">
+            <!--最终通知-->
+            <aop:after method="after1" pointcut-ref="myPointcut1"/>
+        </aop:aspect>
+    </aop:config>
+
+</beans>
