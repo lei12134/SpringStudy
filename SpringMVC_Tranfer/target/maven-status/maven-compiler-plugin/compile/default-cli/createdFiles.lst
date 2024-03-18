@@ -1,0 +1,4 @@
+com\example\bean\Account.class
+com\example\bean\User.class
+com\example\bean\Address.class
+com\example\controller\Transfer.class
